@@ -21,9 +21,5 @@ export enum SpeechTone {
 declare global {
   interface Window {
     webkitAudioContext: typeof AudioContext;
-    aistudio?: {
-      hasSelectedApiKey: () => Promise<boolean>;
-      openSelectKey: () => Promise<void>;
-    };
   }
 }

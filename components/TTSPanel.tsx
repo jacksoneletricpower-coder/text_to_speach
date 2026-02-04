@@ -95,13 +95,16 @@ export const TTSPanel: React.FC = () => {
     <div className="space-y-8 max-w-4xl mx-auto">
       
       {/* 1. Text Section */}
-      <section className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+      <section className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
         <div className="flex justify-between items-center mb-4">
-          <label className="text-sm font-bold text-slate-700">Seu Texto</label>
+          <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
+            <div className="w-1 h-4 bg-indigo-500 rounded-full"></div>
+            Seu Texto
+          </label>
         </div>
-        <div className="relative">
+        <div className="relative group">
           <textarea
-            className="w-full min-h-[180px] p-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 text-lg resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder:text-slate-400"
+            className="w-full min-h-[180px] p-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 text-lg resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:bg-white transition-all placeholder:text-slate-400"
             placeholder="Digite ou cole aqui o texto que você deseja converter em áudio..."
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -115,7 +118,7 @@ export const TTSPanel: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         
         {/* 2. Tone Section (Left Column) */}
-        <section className="md:col-span-5 bg-white rounded-2xl p-6 shadow-sm border border-slate-200 h-full">
+        <section className="md:col-span-5 bg-white rounded-2xl p-6 shadow-sm border border-slate-200 h-full hover:shadow-md transition-shadow">
            <div className="flex items-center gap-2 mb-4">
              <div className="w-1.5 h-1.5 rounded-full bg-indigo-600"></div>
              <label className="text-sm font-bold text-slate-700">Estilo da Narração</label>
@@ -129,16 +132,17 @@ export const TTSPanel: React.FC = () => {
                    key={tone}
                    onClick={() => setSelectedTone(tone)}
                    className={`
-                     w-full flex items-center gap-3 px-4 py-4 rounded-xl border transition-all duration-200 text-left
+                     w-full flex items-center gap-3 px-4 py-4 rounded-xl border transition-all duration-200 text-left relative overflow-hidden
                      ${isSelected 
-                       ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-sm' 
+                       ? 'border-indigo-500 bg-indigo-50/50 text-indigo-700 shadow-sm' 
                        : 'border-slate-100 bg-slate-50 text-slate-600 hover:bg-slate-100'}
                    `}
                  >
-                   <span className={isSelected ? 'text-indigo-600' : 'text-slate-400'}>
+                   <span className={`relative z-10 ${isSelected ? 'text-indigo-600' : 'text-slate-400'}`}>
                      {getToneIcon(tone)}
                    </span>
-                   <span className="font-semibold">{tone}</span>
+                   <span className="font-semibold relative z-10">{tone}</span>
+                   {isSelected && <div className="absolute left-0 top-0 h-full w-1 bg-indigo-500"></div>}
                  </button>
                );
              })}
@@ -146,7 +150,7 @@ export const TTSPanel: React.FC = () => {
         </section>
 
         {/* 3. Voice Section (Right Column) */}
-        <section className="md:col-span-7 bg-white rounded-2xl p-6 shadow-sm border border-slate-200 h-full">
+        <section className="md:col-span-7 bg-white rounded-2xl p-6 shadow-sm border border-slate-200 h-full hover:shadow-md transition-shadow">
            <div className="flex items-center gap-2 mb-4">
              <div className="w-1.5 h-1.5 rounded-full bg-indigo-600"></div>
              <label className="text-sm font-bold text-slate-700">Escolha a Voz</label>
@@ -160,21 +164,24 @@ export const TTSPanel: React.FC = () => {
                    key={voice.id}
                    onClick={() => setSelectedVoice(voice.id)}
                    className={`
-                     flex flex-col items-center justify-center p-4 rounded-xl border transition-all duration-200 text-center gap-1
+                     flex flex-col items-center justify-center p-4 rounded-xl border transition-all duration-200 text-center gap-1 relative overflow-hidden
                      ${isSelected 
-                       ? 'border-indigo-500 bg-indigo-50 shadow-md transform scale-[1.02]' 
+                       ? 'border-indigo-500 bg-indigo-50/50 shadow-md transform scale-[1.02]' 
                        : 'border-slate-100 bg-slate-50 hover:bg-slate-100 hover:border-slate-200'}
                    `}
                  >
-                   <span className={`font-bold text-lg ${isSelected ? 'text-indigo-800' : 'text-slate-700'}`}>
+                   <span className={`font-bold text-lg relative z-10 ${isSelected ? 'text-indigo-800' : 'text-slate-700'}`}>
                      {voice.name}
                    </span>
-                   <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400">
+                   <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400 relative z-10">
                      {voice.gender}
                    </span>
-                   <span className={`text-xs mt-1 ${isSelected ? 'text-indigo-600' : 'text-slate-500'}`}>
+                   <span className={`text-xs mt-1 relative z-10 ${isSelected ? 'text-indigo-600' : 'text-slate-500'}`}>
                      {voice.description}
                    </span>
+                   {isSelected && <div className="absolute top-0 right-0 p-1.5">
+                      <div className="w-2 h-2 rounded-full bg-indigo-500"></div>
+                   </div>}
                  </button>
                );
              })}
@@ -188,18 +195,18 @@ export const TTSPanel: React.FC = () => {
           onClick={handleGenerate}
           disabled={isLoading || wordCount === 0 || wordCount > MAX_WORDS}
           className={`
-            relative overflow-hidden group px-10 py-4 rounded-full font-bold text-lg shadow-xl transition-all transform hover:-translate-y-1
+            relative overflow-hidden group px-12 py-5 rounded-full font-bold text-lg shadow-xl transition-all transform hover:-translate-y-1
             ${isLoading || wordCount === 0 || wordCount > MAX_WORDS
               ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
-              : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-indigo-200'}
+              : 'bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-indigo-200'}
           `}
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 relative z-10">
              {isLoading ? (
                <Loader2 className="animate-spin" size={24} />
              ) : (
-               <div className="bg-white/20 p-1 rounded-full">
-                 <Play size={16} fill="currentColor" />
+               <div className="bg-white/20 p-1.5 rounded-full">
+                 <Play size={18} fill="currentColor" />
                </div>
              )}
              <span>{isLoading ? 'Gerando Áudio...' : 'Converter para Voz'}</span>
@@ -209,10 +216,10 @@ export const TTSPanel: React.FC = () => {
         {/* Result Player (Floating or Inline) */}
         {audioUrl && !isLoading && (
           <div className="mt-8 w-full max-w-lg animate-fade-in-up">
-            <div className="bg-slate-900 rounded-2xl p-4 shadow-2xl flex items-center gap-4 text-white">
+            <div className="bg-slate-900 rounded-2xl p-4 shadow-2xl flex items-center gap-4 text-white ring-4 ring-slate-100">
                <button 
                  onClick={togglePlay}
-                 className="w-12 h-12 rounded-full bg-indigo-500 hover:bg-indigo-400 flex items-center justify-center transition-colors shrink-0"
+                 className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 flex items-center justify-center transition-all shrink-0 shadow-lg"
                >
                  {isPlaying ? <StopCircle size={24} fill="white" /> : <Play size={24} fill="white" className="ml-1" />}
                </button>
@@ -232,8 +239,6 @@ export const TTSPanel: React.FC = () => {
                  <Download size={20} />
                  <span className="text-[10px] font-medium">WAV</span>
                </a>
-               
-               {/* Hidden fallback download for MP3 if we had conversion logic, simplified to WAV per request/standard */}
             </div>
           </div>
         )}
